@@ -9,8 +9,20 @@ public class Exercises {
         note: you should return the indices in ascending order and every array's solution is unique
     */
     public int[] productIndices(int[] values, int target) {
-        // todo
-        return null;
+        int firstNum, secondNum;
+        int[] answer = new int [2];
+        for (int i = 0 ; i < values.length - 1 ; i++) {
+            firstNum = values[i];
+            for (int j = i + 1 ; j < values.length ; j++) {
+                secondNum = values[j];
+                if (firstNum * secondNum == target) {
+                    answer[0] = i;
+                    answer[1] = j;
+                    return answer;
+                }
+            }
+        }
+        return answer;
     }
 
     /*
@@ -25,8 +37,52 @@ public class Exercises {
         so you should walk in that matrix in a curl and then add the numbers in order you've seen them in a 1D array
     */
     public int[] spiralTraversal(int[][] values, int rows, int cols) {
-        // todo
-        return null;
+        int toRight = cols;
+        int toDown = rows - 1;
+        int toLeft = cols - 1;
+        int toUp = rows - 2;
+        int[] answer = new int [rows * cols];
+        int r = 0;
+        int c = -1;
+        for (int k = 0 ; k < rows * cols ;) {
+            if (k < rows * cols) {
+                for (int i = 0 ; i < toRight ; i++) {
+                    c++;
+                    answer [k] = values[r][c];
+                    k++;
+                }
+                toRight -= 2;
+            }
+
+            if (k < rows * cols) {
+                for (int i = 0 ; i < toDown ; i++) {
+                    r++;
+                    answer [k] = values[r][c];
+                    k++;
+                }
+                toDown -= 2;
+            }
+
+            if (k < rows * cols) {
+                for (int i = 0 ; i < toLeft ; i++) {
+                    c--;
+                    answer [k] = values[r][c];
+                    k++;
+                }
+                toLeft -= 2;
+            }
+
+            if (k < rows * cols) {
+                for (int i = 0 ; i < toUp ; i++) {
+                    r--;
+                    answer [k] = values[r][c];
+                    k++;
+                }
+                toUp -= 2;
+            }
+        }
+
+        return answer;
     }
 
     /*
@@ -54,8 +110,42 @@ public class Exercises {
         if you're familiar with lists and arraylists, you can also edit method's body to use them instead of array
     */
     public int[][] intPartitions(int n) {
-        // todo
-        return null;
+        int count = countPartitions(n, n);
+        int[][] result = new int[count][n];
+        int[] buffer = new int[n];
+        fillPartitions(n, n, buffer, 0, result, new int[]{0});
+        return trimArray(result, count, n);
+    }
+
+    private int countPartitions(int n, int max) {
+        if (n == 0) return 1;
+        if (n < 0 || max == 0) return 0;
+        return countPartitions(n - max, max) + countPartitions(n, max - 1);
+    }
+
+    private void fillPartitions(int n, int max, int[] buffer, int index, int[][] result, int[] count) {
+        if (n == 0) {
+            System.arraycopy(buffer, 0, result[count[0]], 0, index);
+            count[0]++;
+            return;
+        }
+        for (int i = Math.min(n, max); i >= 1; i--) {
+            buffer[index] = i;
+            fillPartitions(n - i, i, buffer, index + 1, result, count);
+        }
+    }
+
+    private int[][] trimArray(int[][] result, int count, int n) {
+        int[][] finalResult = new int[count][];
+        for (int i = 0; i < count; i++) {
+            int length = 0;
+            while (length < n && result[i][length] != 0) {
+                length++;
+            }
+            finalResult[i] = new int[length];
+            System.arraycopy(result[i], 0, finalResult[i], 0, length);
+        }
+        return finalResult;
     }
 
     public static void main(String[] args) {
